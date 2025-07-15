@@ -1,18 +1,28 @@
 // D:\projects\projects\doob-store\my-ecommerce-app\src\pages\CartPage.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import Spinner from '../components/Spinner';
 import { BASE_URL } from '../api';
 // Import CartItem and Product types from where they are defined
 // Assuming src/data/shop-data.ts or similar contains these definitions
-import type { CartItem, Product } from '../data/shop-data';
+// Keep Product if you intend to use it, but for now, it's unused.
+// If CartItem also includes Product details, you might only need CartItem.
+import type { CartItem } from '../data/shop-data'; // Removed 'Product' as it's not directly used to type a variable here
 
 const CartPage: React.FC = () => {
-  const { user, token, isAuthenticated } = useAuth();
+  // 'user' is declared but its value is never read.
+  // Since 'user' is not used in the UI or logic, we can remove it from destructuring.
+  const { /* user, */ token, isAuthenticated } = useAuth();
   const { showToast } = useToast();
-  const navigate = useNavigate();
+  // 'navigate' is declared but its value is never read.
+  // The 'navigate' function from useNavigate() is currently not called anywhere.
+  // If you don't intend to navigate the user from this page, remove it.
+  // If you *do* intend to use it (e.g., to redirect after a successful checkout),
+  // you must call `Maps('/some-path');` somewhere.
+  // For now, to fix the build, we'll comment it out.
+  // const navigate = useNavigate(); 
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
