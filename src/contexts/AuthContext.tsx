@@ -1,14 +1,15 @@
 // src/contexts/AuthContext.tsx
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import Spinner from '../components/Spinner'; // Make sure this path is correct
-import { useToast } from '../contexts/ToastContext'; // <--- ADD THIS LINE
+import { useToast } from '../contexts/ToastContext';
 import { BASE_URL } from '../api';
+
 // Define the shape of the user object that comes from your backend
 interface User {
   id: string;
   username: string;
   email?: string; // Add email as optional, or required if your backend always returns it
-  role?: string// Add any other user properties your backend returns
+  role?: string; // Add any other user properties your backend returns
 }
 
 // Define the shape of the AuthContext value
@@ -29,9 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
 
-  // <--- ADD THIS LINE TO GET showToast FROM ITS CONTEXT
   const { showToast } = useToast();
-
 
   const saveAuthData = (accessToken: string, userData: User) => {
     localStorage.setItem('accessToken', accessToken);
@@ -93,8 +92,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  // Update dependencies with showToast
-  const login = useCallback(async (username, password) => {
+  // FIX: Added string type annotations to username and password
+  const login = useCallback(async (username: string, password: string) => { // <--- FIXED HERE
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
@@ -112,9 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         const errorData = await response.json();
         console.error('Login failed:', errorData.message || response.statusText);
-        // Display specific error message if backend provides it as an array or string
         const errorMessage = Array.isArray(errorData.message) ? errorData.message.join(', ') : (errorData.message || response.statusText);
-        showToast(`Login failed: ${errorMessage}`, 'error'); // This will now work
+        showToast(`Login failed: ${errorMessage}`, 'error');
         clearAuthData();
         return false;
       }
@@ -124,10 +122,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
       return false;
     }
-  }, [BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
+  }, [BASE_URL, showToast]);
 
-  // Updated signup function to accept email
-  const signup = useCallback(async (username, password, email) => {
+  // FIX: Added string type annotations to username, password, and email
+  const signup = useCallback(async (username: string, password: string, email: string) => { // <--- FIXED HERE
     try {
       const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
@@ -145,9 +143,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         const errorData = await response.json();
         console.error('Signup failed:', errorData.message || response.statusText);
-        // Display specific error message if backend provides it as an array or string
         const errorMessage = Array.isArray(errorData.message) ? errorData.message.join(', ') : (errorData.message || response.statusText);
-        showToast(`Signup failed: ${errorMessage}`, 'error'); // This will now work
+        showToast(`Signup failed: ${errorMessage}`, 'error');
         clearAuthData();
         return false;
       }
@@ -157,7 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
       return false;
     }
-  }, [BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
+  }, [BASE_URL, showToast]);
 
   const logout = useCallback(() => {
     clearAuthData();
