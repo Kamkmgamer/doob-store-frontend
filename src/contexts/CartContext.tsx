@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext'; // To get token and user info
 import { useToast } from './ToastContext'; // For user feedback
-
+import { BASE_URL } from '../api';
 // Define the shape of a single cart item (from backend)
 export interface CartItem {
   id: string; // The ID of the cart item entry itself
@@ -33,7 +33,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { token, isAuthenticated } = useAuth(); // Get auth token from AuthContext
   const { showToast } = useToast(); // Get toast function from ToastContext
 
-  const API_BASE_URL = 'http://localhost:3000'; // Your backend API base URL
 
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated || !token) {
@@ -44,7 +43,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -66,7 +65,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token, API_BASE_URL, showToast]);
+  }, [isAuthenticated, token, BASE_URL, showToast]);
 
   // Fetch cart when authentication status or token changes
   useEffect(() => {
@@ -81,7 +80,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +108,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token, fetchCart, API_BASE_URL, showToast]);
+  }, [isAuthenticated, token, fetchCart, BASE_URL, showToast]);
 
 
   // IMPORTANT: Define removeCartItem BEFORE updateCartItemQuantity
@@ -121,7 +120,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/${cartItemId}`, {
+      const response = await fetch(`${BASE_URL}/cart/${cartItemId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -145,7 +144,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token, fetchCart, API_BASE_URL, showToast]);
+  }, [isAuthenticated, token, fetchCart, BASE_URL, showToast]);
 
 
   // Now updateCartItemQuantity can safely call removeCartItem
@@ -161,7 +160,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/${cartItemId}`, {
+      const response = await fetch(`${BASE_URL}/cart/${cartItemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -187,7 +186,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token, fetchCart, API_BASE_URL, removeCartItem, showToast]); // removeCartItem in dependencies is correct
+  }, [isAuthenticated, token, fetchCart, BASE_URL, removeCartItem, showToast]); // removeCartItem in dependencies is correct
 
 
   const clearCart = useCallback(async () => {
@@ -198,7 +197,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/clear`, { // Assuming you have a /cart/clear endpoint
+      const response = await fetch(`${BASE_URL}/cart/clear`, { // Assuming you have a /cart/clear endpoint
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -222,7 +221,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token, API_BASE_URL, showToast]);
+  }, [isAuthenticated, token, BASE_URL, showToast]);
 
 
   const value = {

@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import Spinner from '../components/Spinner'; // Make sure this path is correct
 import { useToast } from '../contexts/ToastContext'; // <--- ADD THIS LINE
-
+import { BASE_URL } from '../api';
 // Define the shape of the user object that comes from your backend
 interface User {
   id: string;
@@ -32,7 +32,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // <--- ADD THIS LINE TO GET showToast FROM ITS CONTEXT
   const { showToast } = useToast();
 
-  const API_BASE_URL = 'http://localhost:3000'; // Your backend API base URL
 
   const saveAuthData = (accessToken: string, userData: User) => {
     localStorage.setItem('accessToken', accessToken);
@@ -58,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (storedToken && storedUser) {
       try {
         const parsedUser: User = JSON.parse(storedUser);
-        const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+        const response = await fetch(`${BASE_URL}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${storedToken}`,
           },
@@ -88,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
     }
     setLoadingAuth(false);
-  }, [API_BASE_URL]);
+  }, [BASE_URL]);
 
   useEffect(() => {
     checkAuthStatus();
@@ -97,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Update dependencies with showToast
   const login = useCallback(async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,12 +124,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
       return false;
     }
-  }, [API_BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
+  }, [BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
 
   // Updated signup function to accept email
   const signup = useCallback(async (username, password, email) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
       return false;
     }
-  }, [API_BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
+  }, [BASE_URL, showToast]); // <--- ADDED showToast TO DEPENDENCY ARRAY
 
   const logout = useCallback(() => {
     clearAuthData();

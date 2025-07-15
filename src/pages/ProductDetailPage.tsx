@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Fade } from 'react-awesome-reveal';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
-
+import { BASE_URL } from '../api';
 import type { Product } from '../data/shop-data'; // Keep Product type
 
 const ProductDetailPage: React.FC = () => {
@@ -19,7 +19,6 @@ const ProductDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1); // State for quantity to add
 
-  const API_BASE_URL = 'http://localhost:3000';
 
   // --- Fetch Single Product from Backend ---
   const fetchProduct = useCallback(async () => {
@@ -32,7 +31,7 @@ const ProductDetailPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/products/${id}`);
+      const response = await fetch(`${BASE_URL}/products/${id}`);
       if (!response.ok) {
         if (response.status === 404) {
           setError('Product not found.');
@@ -83,7 +82,7 @@ const ProductDetailPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

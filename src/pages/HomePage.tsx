@@ -6,7 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { Fade, Slide } from 'react-awesome-reveal';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
-
+import { BASE_URL } from '../api';
 import type { Product } from '../data/shop-data'; // Keep Product type for consistency
 
 const HomePage: React.FC = () => {
@@ -16,14 +16,13 @@ const HomePage: React.FC = () => {
   const { showToast } = useToast();
   const { user, token } = useAuth();
 
-  const API_BASE_URL = 'http://localhost:3000'; // Your backend API base URL
 
   // --- Fetch Products from Backend ---
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/products`);
+      const response = await fetch(`${BASE_URL}/products`);
       if (!response.ok) {
         throw new Error(`Failed to fetch products: ${response.statusText}`);
       }
@@ -52,7 +51,7 @@ const HomePage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

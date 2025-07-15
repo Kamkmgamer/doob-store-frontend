@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import Spinner from '../components/Spinner';
-
+import { BASE_URL } from '../api';
 // Import CartItem and Product types from where they are defined
 // Assuming src/data/shop-data.ts or similar contains these definitions
 import type { CartItem, Product } from '../data/shop-data';
@@ -17,7 +17,6 @@ const CartPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const API_BASE_URL = 'http://localhost:3000'; // Your backend API base URL
 
   // --- Fetch Cart Items from Backend ---
   const fetchCart = useCallback(async () => {
@@ -30,7 +29,7 @@ const CartPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -97,7 +96,7 @@ const CartPage: React.FC = () => {
 
     try {
       // PATCH request to update quantity, expecting productId in URL param
-      const response = await fetch(`${API_BASE_URL}/cart/${productId}`, {
+      const response = await fetch(`${BASE_URL}/cart/${productId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +134,7 @@ const CartPage: React.FC = () => {
 
     try {
       // DELETE request to remove item, expecting productId in URL param
-      const response = await fetch(`${API_BASE_URL}/cart/${productId}`, {
+      const response = await fetch(`${BASE_URL}/cart/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -172,7 +171,7 @@ const CartPage: React.FC = () => {
 
     try {
       // DELETE request to clear all items, using the /cart/all endpoint
-      const response = await fetch(`${API_BASE_URL}/cart/all`, { // Corrected endpoint to match backend
+      const response = await fetch(`${BASE_URL}/cart/all`, { // Corrected endpoint to match backend
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

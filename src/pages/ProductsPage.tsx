@@ -7,7 +7,7 @@ import { useToast } from '../contexts/ToastContext'; // Import useToast
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 
 import type { Product } from '../data/shop-data'; // Keep Product type for consistency
-
+import { BASE_URL } from '../api';
 // No longer needs props from App.tsx
 // interface ProductsPageProps {
 //   addToCart: (product: Product) => void;
@@ -20,14 +20,12 @@ const ProductsPage: React.FC = () => { // Removed ProductsPageProps
   const { showToast } = useToast();
   const { user, token } = useAuth(); // Get user and token for adding to cart
 
-  const API_BASE_URL = 'http://localhost:3000'; // Your backend API base URL
-
   // --- Fetch Products from Backend ---
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/products`); // Fetch all products
+      const response = await fetch(`${BASE_URL}/products`); // Fetch all products
       if (!response.ok) {
         throw new Error(`Failed to fetch products: ${response.statusText}`);
       }
@@ -54,7 +52,7 @@ const ProductsPage: React.FC = () => { // Removed ProductsPageProps
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
+      const response = await fetch(`${BASE_URL}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
